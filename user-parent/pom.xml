@@ -15,7 +15,7 @@
 		<module>../user-log</module>
 		<module>../user-service</module>
 	</modules>
-
+	<!-- 发布到nexus私服的配置 -->
 	<distributionManagement>
 		<repository>
 			<id>user-release</id>
@@ -28,7 +28,7 @@
 			<url>http://localhost:8081/nexus/content/repositories/cms-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
@@ -297,7 +297,52 @@
 						<!-- 跳过测试阶段，一般不推荐跳过 -->
 						<!-- <skip>true</skip> -->
 					</configuration>
+				<!-- 	<executions>
+			          <execution>
+			            <phase>integration-test</phase>
+			            <goals>
+			               <goal>test</goal>
+			            </goals>
+			            <configuration>
+			               <excludes>
+			                  <exclude>none</exclude>
+			               </excludes>
+			               <includes>
+			                  <include>**/*IntegrationTest.java</include>
+			               </includes>
+			            </configuration>
+			         </execution>
+			      </executions> -->
 				</plugin>
+				
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<!-- customer groupId,artifactId,version -->
+					<groupId>org.somegroup</groupId>
+					<artifactId>someartifact</artifactId>
+					<version>1.0</version>
+					<packaging>jar</packaging>
+					<!-- basedir -->
+					<file>${basedir}/test.jar</file>
+					<!-- generate pom file -->
+					<generatePom>true</generatePom>
+					<!-- <generatePom>false</generatePom>
+					<pomFile>${basedir}/dependencies/someartifact-1.0.pom</pomFile> -->
+				</configuration>
+				<executions>
+					<execution>
+						<id>install-jar-lib</id>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<!-- you will need to run the validation phase explicitly: mvn validate.After this step, the standard compilation will work: mvn clean install-->
+						<phase>validate</phase>
+					</execution>
+				</executions>
+			</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
