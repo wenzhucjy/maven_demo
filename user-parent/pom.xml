@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>zttc.itat.user</groupId>
+	<groupId>com.github.wenzhu.maven.user</groupId>
 	<artifactId>user-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -34,8 +34,8 @@
 		<jdbc.driver>com.mysql.jdbc.Driver</jdbc.driver>
 		<jdbc.url>jdbc:mysql://localhost:3306</jdbc.url>
 		<jdbc.username>root</jdbc.username>
-		<jdbc.password>123456</jdbc.password>
-		<catalina.home>D:\apache-tomcat-6.0.33-windows-x86</catalina.home>
+		<jdbc.password>root</jdbc.password>
+		<catalina.home>D:\tomcat_8\war</catalina.home>
 	</properties>
 
 	<!-- <repositories> <repository> <id>nexus</id> <name>Nexus Repository</name> 
@@ -43,6 +43,7 @@
 		<enabled>true</enabled> </releases> snapshots默认是关闭的，需要手动开启 <snapshots> <enabled>true</enabled> 
 		</snapshots> </repository> </repositories> -->
 
+	<!-- 供子pom继承 dependency -->
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -106,7 +107,7 @@
 				<artifactId>user-log</artifactId>
 				<version>${project.version}</version>
 				<exclusions>
-					<!-- 可以排除依赖 -->
+					<!-- 用来排除传递性依赖 -->
 					<exclusion>
 						<groupId>commons-logging</groupId>
 						<artifactId>commons-logging</artifactId>
@@ -282,6 +283,7 @@
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
+						<showWarnings>true</showWarnings>
 						<!-- 此处设置了skip等于设置了把所有的测试编译都跳过，如果测试类写得有问题，也不会报错，所以一般不使用 -->
 						<!-- <skip>true</skip> -->
 					</configuration>
@@ -315,31 +317,52 @@
 			      </executions> -->
 				</plugin>
 				
+				
+				<!-- 安装jar到本地仓库中 -->
 				<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<version>2.5.2</version>
 				<configuration>
-					<!-- customer groupId,artifactId,version -->
 					<groupId>org.somegroup</groupId>
 					<artifactId>someartifact</artifactId>
 					<version>1.0</version>
 					<packaging>jar</packaging>
-					<!-- basedir -->
 					<file>${basedir}/test.jar</file>
-					<!-- generate pom file -->
 					<generatePom>true</generatePom>
 					<!-- <generatePom>false</generatePom>
 					<pomFile>${basedir}/dependencies/someartifact-1.0.pom</pomFile> -->
 				</configuration>
-				<executions>
+				<!-- you will need to run the validation phase explicitly: mvn validate.After this step, the standard compilation will work: mvn clean install-->
+				<!-- <executions>
 					<execution>
 						<id>install-jar-lib</id>
 						<goals>
 							<goal>install-file</goal>
 						</goals>
-						<!-- you will need to run the validation phase explicitly: mvn validate.After this step, the standard compilation will work: mvn clean install-->
 						<phase>validate</phase>
+					</execution>
+				</executions> -->
+			</plugin>
+			
+			<!-- 生成可执行的jar文件,存放于jar文件中的META-INF/MANIFEST.MF,然后执行 java-jar ***.jar-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						   <configuration>
+				              <transformers>
+				                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+				                  <mainClass>org.sonatype.haven.HavenCli</mainClass>
+				                </transformer>
+				              </transformers>
+				            </configuration>
 					</execution>
 				</executions>
 			</plugin>
