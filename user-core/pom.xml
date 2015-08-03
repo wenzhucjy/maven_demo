@@ -5,6 +5,7 @@
   	<groupId>com.github.wenzhu.maven.user</groupId>
   	<artifactId>user-parent</artifactId>
   	<version>0.0.1-SNAPSHOT</version>
+  	<!-- 默认值 ../pom.xml , 父POM在上一层目录下 -->
   	<relativePath>../user-parent/pom.xml</relativePath>
   </parent>
   

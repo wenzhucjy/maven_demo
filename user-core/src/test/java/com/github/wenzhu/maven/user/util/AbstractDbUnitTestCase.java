@@ -15,9 +15,9 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import junit.framework.Assert;
 
 public class AbstractDbUnitTestCase {
 	public static IDatabaseConnection dbunitCon;
