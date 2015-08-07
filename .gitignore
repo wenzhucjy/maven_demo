@@ -9,6 +9,12 @@
 *.ear
 
 
+# Intellij
+.idea/
+*.iml
+*.iws
+
+
 # Eclipse
 .settings/
 .prefs

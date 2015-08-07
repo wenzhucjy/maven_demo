@@ -4,3 +4,10 @@
 .settings/
 .prefs
 *.prefs
+
+
+
+# Intellij
+.idea/
+*.iml
+*.iws
